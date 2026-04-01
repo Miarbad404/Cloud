@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Test Supabase</title></head>
+<body style="background:#111;color:#fff;font-family:monospace;padding:20px">
+<h2>Test connexion Supabase</h2>
+<div id="result" style="margin-top:20px;font-size:14px;line-height:2"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var URL = "https://yhgospjbzprvvllxknyh.supabase.co";
+var KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InloZ29zcGpienBydnZsbHhrbnloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMjQwMTUsImV4cCI6MjA5MDYwMDAxNX0.BFMs8SuFI2v8VvESSGIY57BmKNm6_Rc2qggQxVmyMBs";
+var supa = supabase.createClient(URL, KEY);
+var log = document.getElementById("result");
+function add(msg, color) { log.innerHTML += '<div style="color:'+(color||"#fff")+'">'+msg+'</div>'; }
+
+async function run() {
+  add("1. Test connexion Supabase...", "#aaa");
+  try {
+    var r1 = await supa.from("users").select("count");
+    if(r1.error) { add("ERREUR table users: " + r1.error.message, "#f55"); }
+    else { add("OK - Table users accessible", "#0f0"); }
+
+    add("2. Test login admin...", "#aaa");
+    var r2 = await supa.from("users").select("*").eq("login","admin").eq("password","admin123").single();
+    if(r2.error) { add("ERREUR login: " + r2.error.message, "#f55"); }
+    else { add("OK - User trouve: " + JSON.stringify(r2.data), "#0f0"); }
+  } catch(e) {
+    add("Exception: " + e.message, "#f55");
+  }
+}
+run();
+</script>
+</body>
+</html>
